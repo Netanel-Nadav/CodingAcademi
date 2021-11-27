@@ -7,12 +7,12 @@ const EMPTY = '';
 var gTimerInterval;
 var gBoard;
 var gIsFirstClick = false;
-
+var hintsCounter = 3;
 
 var gLevel = {
     SIZE: 4,
     MINES: 2,
-    LIFE: 3
+    LIFE: 2
 };
 
 var gGame = {
@@ -24,12 +24,15 @@ var gGame = {
 
 function initGame() {
     gGame.isOn = true;
-    gBoard = buildBoard()
+    gBoard = buildBoard();
+    showLife()
     console.table(gBoard);
     renderBoard(gBoard);
     // countNegsAround(gBoard);
     gGame.shownCount = 0
     gGame.markedCount = 0
+    console.log('MINES', gLevel.MINES);
+
 }
 
 function buildBoard() {
@@ -47,7 +50,7 @@ function buildBoard() {
     }
     return board;
 }
-
+console.log('MINES', gLevel.MINES);
 
 function getRandomMineLocation(board, cellI, cellJ) {
     var bombCounter = 0;
@@ -122,13 +125,17 @@ function cellClicked(elCell, i, j) {
     var cell = gBoard[i][j];
     if (cell.isShown) return
     if (cell.isMarked) return
+    elCell.innerText = (gBoard[i][j].isMine) ? MINE : gBoard[i][j].minesAroundCount;
+    elCell.classList.add('clicked-cell');
     if (cell.isMine) {
         gLevel.LIFE--;
         cell.isShown = true;
+        elCell.classList.remove('clicked-cell');
         // gGame.markedCount ++;
         elCell.style.backgroundColor = 'red';
         elCell.innerText = MINE;
         elCell.style.color = 'white'
+
         if (gLevel.LIFE === 0) {
             checkGameOver(elCell);
             showAllBombs(gBoard);
@@ -145,20 +152,17 @@ function cellClicked(elCell, i, j) {
         console.log(gGame.shownCount);
         winCheck();
         if (cell.minesAroundCount === '') expandShown(gBoard, elCell, i, j)
-
     }
-    elCell.innerText = (gBoard[i][j].isMine) ? MINE : gBoard[i][j].minesAroundCount;
-    elCell.classList.add('clicked-cell');
 }
 
 
 function cellMarked(elCell, i, j) {
     const noPopup = document.getElementById('table')
     noPopup.addEventListener("contextmenu", e => e.preventDefault());
+    if (!gGame.isOn) return
     if (gBoard[i][j].isShown) return
     if (!gBoard[i][j].isMarked) {
         gBoard[i][j].isMarked = true;
-        
         gGame.markedCount++
         console.log(gGame.markedCount);
         winCheck();
@@ -185,7 +189,9 @@ function checkGameOver(elCell) {
 
 
 function winCheck() {
-    if (gGame.shownCount + gGame.markedCount === gLevel.SIZE * gLevel.SIZE && gGame.markedCount <= gLevel.MINES) {
+    if (gGame.shownCount === (gLevel.SIZE ** 2) - gLevel.MINES) {
+        gGame.isOn = false;
+        console.log('Checking win');
         document.querySelector('.smilie').innerText = '😎';
         document.querySelector('.popup').style.display = 'block';
         document.querySelector('.popup h2').innerText = 'Victory!';
@@ -220,7 +226,7 @@ function startGame(elBtn) {
     stopClock();
     // startTimer();
     document.querySelector('.smilie').innerText = '🤩';
-    gLevel.LIFE = 3;
+    gLevel.LIFE = 2;
     showLife()
     initGame();
     closePopup()
@@ -228,9 +234,15 @@ function startGame(elBtn) {
 
 
 function showLife() {
-    document.querySelector('.life1').style.visibility = 'visible'
-    document.querySelector('.life2').style.visibility = 'visible'
-    document.querySelector('.life3').style.visibility = 'visible'
+    if (gLevel.SIZE === 4) {
+        document.querySelector('.life1').style.visibility = 'visible'
+        document.querySelector('.life2').style.visibility = 'visible'
+        document.querySelector('.life3').style.visibility = 'hidden'
+    } else {
+        document.querySelector('.life1').style.visibility = 'visible'
+        document.querySelector('.life2').style.visibility = 'visible'
+        document.querySelector('.life3').style.visibility = 'visible'
+    }
 }
 
 
@@ -296,11 +308,11 @@ function setGameSize(elBtn) {
 
 
 function safeClick(gBoard) {
-    var i = getRandomIntInclusive(0, gBoard.length);
-    var j = getRandomIntInclusive(0, gBoard.length);
-    for (var idx = 0; idx < gBoard.length; i++) {
-        for (var jdx = 0; jdx < gBoard[0].length; j++) {
-            var currCell = gBoard[idx][jdx];
+    var randI = getRandomIntInclusive(0, gBoard.length - 1);
+    var randJ = getRandomIntInclusive(0, gBoard.length) - 1;
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            var currCell = gBoard[i][j];
             if (currCell[i][j] !== currCell.isMine) {
                 // this is where my mind takes me to but,
                 //  i dont know how to continue 

@@ -10,33 +10,37 @@
 </head>
 
 <body onload="initGame()">
-    <h1>Minesweer Game</h1>
-    <p class="subtitle">BY NETANEL NADAV</p>
-    <div class="container">
-        <div class="startgame">
-            <button class="smilie" onclick="startGame(this)">🤩</button>
+    <div class="main-container">
+        <h1>Minesweer Game</h1>
+        <p class="subtitle">BY NETANEL NADAV</p>
+        <div class="container">
+            <div class="startgame">
+                <button class="smilie" onclick="startGame(this)">🤩</button>
+            </div>
+            <button class="game-size" onclick="setGameSize(this)">Easy</button>
+            <button class="game-size" onclick="setGameSize(this)">Medium</button>
+            <button class="game-size" onclick="setGameSize(this)">Hard</button>
+            <ul>
+                <il class="life1">❤</il>
+                <il class="life2">❤</il>
+                <il class="life3">❤</il>
+            </ul>
+
+            <div class="popup">
+                <h2>Game Over!</h2>
+                <p>Lets try again!</p>
+                <p>Your Game time is: <br>
+                    <span class="timer2"></span>
+                </p>
+                <button class="game-size" onclick="startGame(this)">Start Game</button>
+            </div>
+            <table id="table">
+                <tbody class="board">
+                </tbody>
+            </table>
         </div>
-        <button class="game-size" onclick="setGameSize(this)">Easy</button>
-        <button class="game-size" onclick="setGameSize(this)">Medium</button>
-        <button class="game-size" onclick="setGameSize(this)">Hard</button>
-        <ul>
-            <il class="life1">❤</il>
-            <il class="life2">❤</il>
-            <il class="life3">❤</il>
-        </ul>
-        <div class="popup">
-            <h2>Game Over!</h2>
-            <p>Lets try again!</p>
-            <p>Your Game time is: <br>
-                 <span class="timer2"></span></p>
-            <button class="game-size" onclick="startGame(this)">Start Game</button>
-        </div>
-        <table id="table">
-            <tbody class="board">
-            </tbody>
-        </table>
+        <div class="time">Your time in the Game: <span class="timer"></span></div>
     </div>
-    <div class="time">Your time in the Game: <span class="timer"></span></div>
     <script src="js/utils.js"></script>
     <script src="js/main.js"></script>
 </body>
